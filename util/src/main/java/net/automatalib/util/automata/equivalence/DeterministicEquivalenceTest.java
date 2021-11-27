@@ -46,6 +46,21 @@ public class DeterministicEquivalenceTest<I> {
             UniversalDeterministicAutomaton<S, I, T, SP, TP> reference,
             UniversalDeterministicAutomaton<S2, I, T2, SP2, TP2> other,
             Collection<? extends I> inputs) {
+        return findSeparatingWord(reference, other, inputs, false);
+    }
+
+    public static <I, S, T, SP, TP, S2, T2, SP2, TP2> @Nullable Word<I> findSeparatingWordLarge(
+            UniversalDeterministicAutomaton<S, I, T, SP, TP> reference,
+            UniversalDeterministicAutomaton<S2, I, T2, SP2, TP2> other,
+            Collection<? extends I> inputs) {
+        return findSeparatingWordLarge(reference, other, inputs, false);
+    }
+
+    public static <I, S, T, SP, TP, S2, T2, SP2, TP2> @Nullable Word<I> findSeparatingWord(
+            UniversalDeterministicAutomaton<S, I, T, SP, TP> reference,
+            UniversalDeterministicAutomaton<S2, I, T2, SP2, TP2> other,
+            Collection<? extends I> inputs,
+            boolean ignoreUndefinedTransitions) {
         int refSize = reference.size();
         int totalStates = refSize * other.size();
 
@@ -100,7 +115,7 @@ public class DeterministicEquivalenceTest<I> {
                 T2 otherTrans = other.getTransition(otherState, in);
 
                 if (refTrans == null || otherTrans == null) {
-                    if (refTrans == null && otherTrans == null) {
+                    if (ignoreUndefinedTransitions || (refTrans == null && otherTrans == null)) {
                         continue;
                     } else {
                         break bfs;
@@ -163,7 +178,8 @@ public class DeterministicEquivalenceTest<I> {
     public static <I, S, T, SP, TP, S2, T2, SP2, TP2> @Nullable Word<I> findSeparatingWordLarge(
             UniversalDeterministicAutomaton<S, I, T, SP, TP> reference,
             UniversalDeterministicAutomaton<S2, I, T2, SP2, TP2> other,
-            Collection<? extends I> inputs) {
+            Collection<? extends I> inputs,
+            boolean ignoreUndefinedTransitions) {
         S refInit = reference.getInitialState();
         S2 otherInit = other.getInitialState();
 
@@ -213,7 +229,7 @@ public class DeterministicEquivalenceTest<I> {
                 T2 otherTrans = other.getTransition(otherState, in);
 
                 if (refTrans == null || otherTrans == null) {
-                    if (refTrans == null && otherTrans == null) {
+                    if (ignoreUndefinedTransitions || (refTrans == null && otherTrans == null)) {
                         continue;
                     } else {
                         break bfs;
