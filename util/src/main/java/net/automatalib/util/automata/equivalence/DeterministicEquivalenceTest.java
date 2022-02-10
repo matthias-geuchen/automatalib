@@ -46,15 +46,22 @@ public class DeterministicEquivalenceTest<I> {
             UniversalDeterministicAutomaton<S, I, T, SP, TP> reference,
             UniversalDeterministicAutomaton<S2, I, T2, SP2, TP2> other,
             Collection<? extends I> inputs) {
+        S refInit = reference.getInitialState();
+        S2 otherInit = other.getInitialState();
+        return findSeparatingWord(reference, other, refInit, otherInit, inputs);
+    }
+
+    public static <I, S, T, SP, TP, S2, T2, SP2, TP2> @Nullable Word<I> findSeparatingWord(
+            UniversalDeterministicAutomaton<S, I, T, SP, TP> reference,
+            UniversalDeterministicAutomaton<S2, I, T2, SP2, TP2> other,
+            S refInit, S2 otherInit,
+            Collection<? extends I> inputs) {
         int refSize = reference.size();
         int totalStates = refSize * other.size();
 
         if (totalStates < 0 || totalStates > MAP_THRESHOLD) {
-            return findSeparatingWordLarge(reference, other, inputs);
+            return findSeparatingWordLarge(reference, other, refInit, otherInit, inputs);
         }
-
-        S refInit = reference.getInitialState();
-        S2 otherInit = other.getInitialState();
 
         if (refInit == null || otherInit == null) {
             return refInit == null && otherInit == null ? null : Word.epsilon();
@@ -166,6 +173,14 @@ public class DeterministicEquivalenceTest<I> {
             Collection<? extends I> inputs) {
         S refInit = reference.getInitialState();
         S2 otherInit = other.getInitialState();
+        return findSeparatingWordLarge(reference, other, refInit, otherInit, inputs);
+    }
+
+    public static <I, S, T, SP, TP, S2, T2, SP2, TP2> @Nullable Word<I> findSeparatingWordLarge(
+            UniversalDeterministicAutomaton<S, I, T, SP, TP> reference,
+            UniversalDeterministicAutomaton<S2, I, T2, SP2, TP2> other,
+            S refInit, S2 otherInit,
+            Collection<? extends I> inputs) {
 
         if (refInit == null || otherInit == null) {
             return refInit == null && otherInit == null ? null : Word.epsilon();
